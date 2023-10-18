@@ -1,7 +1,7 @@
 import { useMsal } from "@azure/msal-react";
 import React, { useEffect, useState } from "react";
 import { loginRequest } from "../../authConfig";
-import { getMsGraph } from "../../services/auth";
+import { getMsGraph } from "../../services/azure-services";
 
 const Home = () => {
   const { instance, accounts } = useMsal();
@@ -19,6 +19,7 @@ const Home = () => {
   }, [userAccount]);
 
   const getGraphData = async () => {
+    //TODO: save in storage and handle refresh
     const tokenResponse = await instance.acquireTokenSilent({
       ...loginRequest,
       account: userAccount,
