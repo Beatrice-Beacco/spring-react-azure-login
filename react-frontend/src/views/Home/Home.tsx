@@ -20,6 +20,7 @@ const Home = () => {
 
   const getGraphData = async () => {
     //TODO: save in storage and handle refresh
+    //TODO: uso sempre lo stesso metodo per refreshare il token
     const tokenResponse = await instance.acquireTokenSilent({
       ...loginRequest,
       account: userAccount,
