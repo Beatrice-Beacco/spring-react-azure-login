@@ -4,6 +4,6 @@ import { AxiosHeaders } from "axios";
 
 export const getMsGraph = async (accessToken: string) => {
   const headers = new AxiosHeaders();
-  headers.setAuthorizationBearer(accessToken);
+  headers.setAuthorization(`Bearer ${accessToken}`);
   return axios.get(graphConfig.graphMeEndpoint, { headers: headers });
 };

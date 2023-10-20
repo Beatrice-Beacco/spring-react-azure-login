@@ -19,6 +19,8 @@ const Home = () => {
   }, [userAccount]);
 
   const getGraphData = async () => {
+    console.log("user account", userAccount);
+
     //TODO: save in storage and handle refresh
     //TODO: uso sempre lo stesso metodo per refreshare il token
     const tokenResponse = await instance.acquireTokenSilent({

@@ -6,7 +6,11 @@ const getRouter = (isAuthenticated: boolean) => {
   return createBrowserRouter([
     {
       path: "/",
-      element: <Navigate to={isAuthenticated ? "/home" : "/login"} />,
+      element: isAuthenticated ? (
+        <Navigate replace to="/home" />
+      ) : (
+        <Navigate replace to="/login" />
+      ),
     },
     {
       path: "/login",
