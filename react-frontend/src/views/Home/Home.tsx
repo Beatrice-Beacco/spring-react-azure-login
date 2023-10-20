@@ -2,6 +2,7 @@ import { useMsal } from "@azure/msal-react";
 import React, { useEffect, useState } from "react";
 import { loginRequest } from "../../authConfig";
 import { getMsGraph } from "../../services/azure-services";
+import { checkEndpoint } from "../../services/api-services";
 
 const Home = () => {
   const { instance, accounts } = useMsal();
@@ -30,6 +31,9 @@ const Home = () => {
 
     const graphResponse = await getMsGraph(tokenResponse.accessToken);
     setGraphData(graphResponse.data);
+
+    const checkResponse = await checkEndpoint(tokenResponse.accessToken);
+    console.log("checkResponse", checkResponse);
   };
 
   const handleLogout = async () => {
