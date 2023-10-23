@@ -19,11 +19,11 @@ import java.io.IOException;
 @Slf4j
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
+public class AzureADJwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtDecoder jwtDecoder;
 
-    public JwtAuthenticationFilter(JwtDecoder jwtDecoder) {
+    public AzureADJwtAuthenticationFilter(JwtDecoder jwtDecoder) {
         this.jwtDecoder = jwtDecoder;
     }
 
@@ -43,36 +43,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         log.info("Token in filter chain: {}", token);
 
-        try {
-
-            if (token == null) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
-
-            Jwt jwt = getDecodedToken(token);
-
-            log.info("Jwt in filter chain: {}", jwt);
-
-            if (jwt == null) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                return;
-            }
-            JwtAuthenticationToken auth = new JwtAuthenticationToken(jwt);
-            SecurityContextHolder.getContext().setAuthentication(auth);
-            filterChain.doFilter(request, response);
-
-        } catch (Exception e) {
-            log.error("Error: {}", e.getMessage());
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        if (token == null) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
         }
+
+        Jwt jwt = getDecodedToken(token);
+        log.info("Jwt in filter chain: {}", jwt);
+
+        if (jwt == null) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return;
+        }
+        JwtAuthenticationToken auth = new JwtAuthenticationToken(jwt);
+        SecurityContextHolder.getContext().setAuthentication(auth);
+        filterChain.doFilter(request, response);
     }
 
     Jwt getDecodedToken(String token) {
         try{
             return jwtDecoder.decode(token);
         } catch (Exception e) {
-            log.error("Error: {}", e.getMessage());
+            log.error("Token decode error: {}", e.getMessage());
             return null;
         }
     }

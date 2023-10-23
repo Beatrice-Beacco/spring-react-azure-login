@@ -46,7 +46,7 @@ public class AuthController {
             log.info("Jwt: {}", jwtToken);
             log.info("Jwt claims: {}", jwtToken.getClaims());
             // Access user claims from the JWT token
-            return ResponseEntity.status(HttpServletResponse.SC_OK).body("Authenticated user: "/* + jwt.getClaimAsString("username")*/);
+            return ResponseEntity.status(HttpServletResponse.SC_OK).body("Authenticated user: " + jwtToken.getClaimAsString("name"));
         } catch (Exception e) {
             log.error("Error: {}", e.getMessage());
             return ResponseEntity.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).body(e.getMessage());

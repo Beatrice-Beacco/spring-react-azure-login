@@ -64,6 +64,14 @@ export const loginRequest = {
   scopes: ["User.Read"],
 };
 
+export const tokenRequest = {
+  scopes: [
+    "openid",
+    "profile",
+    `api://${import.meta.env.VITE_AZURE_CLIENT_ID}/Files.Read`,
+  ],
+};
+
 /**
  * Add here the scopes to request when obtaining an access token for MS Graph API. For more information, see:
  * https://github.com/AzureAD/microsoft-authentication-library-for-js/blob/dev/lib/msal-browser/docs/resources-and-scopes.md

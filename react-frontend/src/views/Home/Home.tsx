@@ -1,6 +1,6 @@
 import { useMsal } from "@azure/msal-react";
 import React, { useEffect, useState } from "react";
-import { loginRequest } from "../../authConfig";
+import { loginRequest, tokenRequest } from "../../authConfig";
 import { getMsGraph } from "../../services/azure-services";
 import { checkEndpoint } from "../../services/api-services";
 
@@ -24,13 +24,21 @@ const Home = () => {
 
     //TODO: save in storage and handle refresh
     //TODO: uso sempre lo stesso metodo per refreshare il token
-    const tokenResponse = await instance.acquireTokenSilent({
+    const loginTokenResponse = await instance.acquireTokenSilent({
       ...loginRequest,
       account: userAccount,
     });
 
-    const graphResponse = await getMsGraph(tokenResponse.accessToken);
+    console.log("tokenResponse", loginTokenResponse);
+
+    const graphResponse = await getMsGraph(loginTokenResponse.accessToken);
     setGraphData(graphResponse.data);
+
+    //App request
+    const tokenResponse = await instance.acquireTokenSilent({
+      ...tokenRequest,
+      account: userAccount,
+    });
 
     const checkResponse = await checkEndpoint(tokenResponse.accessToken);
     console.log("checkResponse", checkResponse);
