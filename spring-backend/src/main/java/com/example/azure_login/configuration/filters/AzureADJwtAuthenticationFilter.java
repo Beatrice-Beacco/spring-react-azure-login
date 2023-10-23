@@ -1,4 +1,4 @@
-package com.example.azure_login.configuration;
+package com.example.azure_login.configuration.filters;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

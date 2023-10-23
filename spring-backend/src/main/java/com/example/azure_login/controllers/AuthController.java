@@ -12,6 +12,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,27 +24,16 @@ import java.util.Objects;
 
 @RestController
 @Slf4j
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class AuthController {
 
-    @Autowired
-    JwtDecoder jwtDecoder;
-
-    @GetMapping("/admin")
-    @ResponseBody
-    @PreAuthorize("hasAuthority('APPROLE_Admin')")
-    public String Admin(Authentication authentication) {
-        return "Admin message";
-    }
-
     @GetMapping("/check")
-    //@PreAuthorize("isAuthenticated()")
     public ResponseEntity<String> secureData() {
         try {
             // Retrieve the authenticated user's principal (JWT token)
             JwtAuthenticationToken authentication = (JwtAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
             log.info("Authentication: {}", authentication.getPrincipal().toString());
             Jwt jwtToken = authentication.getToken();
-            log.info("Jwt: {}", jwtToken);
             log.info("Jwt claims: {}", jwtToken.getClaims());
             // Access user claims from the JWT token
             return ResponseEntity.status(HttpServletResponse.SC_OK).body("Authenticated user: " + jwtToken.getClaimAsString("name"));
