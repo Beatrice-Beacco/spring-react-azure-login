@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { loginRequest, tokenRequest } from "../../authConfig";
 import { getMsGraph } from "../../services/azure-services";
 import { checkEndpoint } from "../../services/api-services";
+import axios, { AxiosError } from "axios";
 
 const Home = () => {
   const { instance, accounts } = useMsal();
@@ -14,11 +15,13 @@ const Home = () => {
     userPrincipalName: string;
     id: number;
   }>();
+  const [springMessage, setSpringMessage] = useState<string>();
 
   useEffect(() => {
     getGraphData();
   }, [userAccount]);
 
+  //Specific for Graph API
   const getGraphData = async () => {
     console.log("user account", userAccount);
 
@@ -29,19 +32,28 @@ const Home = () => {
       account: userAccount,
     });
 
-    console.log("tokenResponse", loginTokenResponse);
-
     const graphResponse = await getMsGraph(loginTokenResponse.accessToken);
     setGraphData(graphResponse.data);
+  };
 
-    //App request
+  //Specific for Azure AD App
+  const checkTokenValidity = async () => {
     const tokenResponse = await instance.acquireTokenSilent({
       ...tokenRequest,
       account: userAccount,
     });
 
-    const checkResponse = await checkEndpoint(tokenResponse.accessToken);
-    console.log("checkResponse", checkResponse);
+    try {
+      const checkResponse = await checkEndpoint(tokenResponse.accessToken);
+      setSpringMessage(checkResponse.data);
+      //@
+    } catch (e) {
+      const error = e as AxiosError;
+      if (axios.isAxiosError(error)) {
+        setSpringMessage(error?.response?.data as string);
+      }
+      console.log("error", error);
+    }
   };
 
   const handleLogout = async () => {
@@ -58,6 +70,7 @@ const Home = () => {
   return (
     <div>
       <button onClick={handleLogout}>Logout</button>
+      <h1>Account data (Microsoft Graph API)</h1>
       <p>
         <strong>First Name: </strong> {graphData.givenName}
       </p>
@@ -70,6 +83,10 @@ const Home = () => {
       <p>
         <strong>Id: </strong> {graphData.id}
       </p>
+      <button onClick={checkTokenValidity}>
+        Check token validity (Spring Backend)
+      </button>
+      {springMessage && <p>Spring backend message: {springMessage}</p>}
     </div>
   );
 };
