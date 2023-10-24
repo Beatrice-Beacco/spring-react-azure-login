@@ -12,7 +12,9 @@ const Home = () => {
   const [graphData, setGraphData] = useState<{
     givenName: string;
     surname: string;
+    mail: string;
     userPrincipalName: string;
+    displayName: string;
     id: number;
   }>();
   const [springMessage, setSpringMessage] = useState<string>();
@@ -78,7 +80,13 @@ const Home = () => {
         <strong>Last Name: </strong> {graphData.surname}
       </p>
       <p>
-        <strong>Email: </strong> {graphData.userPrincipalName}
+        <strong>Username: </strong> {graphData.userPrincipalName}
+      </p>
+      <p>
+        <strong>Display name: </strong> {graphData.displayName}
+      </p>
+      <p>
+        <strong>Email: </strong> {graphData.mail}
       </p>
       <p>
         <strong>Id: </strong> {graphData.id}
