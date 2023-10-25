@@ -1,6 +1,8 @@
 import { Navigate, createBrowserRouter } from "react-router-dom";
 import Home from "../views/Home";
 import Login from "../views/Login";
+import ProtectedRoute from "./ProtectedRoute";
+import UnauthenticatedRoute from "./UnauthenticatedRoute";
 
 const getRouter = (isAuthenticated: boolean) => {
   return createBrowserRouter([
@@ -14,11 +16,19 @@ const getRouter = (isAuthenticated: boolean) => {
     },
     {
       path: "/login",
-      element: <Login />,
+      element: (
+        <UnauthenticatedRoute>
+          <Login />
+        </UnauthenticatedRoute>
+      ),
     },
     {
       path: "/home",
-      element: <Home />,
+      element: (
+        <ProtectedRoute>
+          <Home />
+        </ProtectedRoute>
+      ),
     },
   ]);
 };
