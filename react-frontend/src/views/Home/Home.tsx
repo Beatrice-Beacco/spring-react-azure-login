@@ -4,6 +4,7 @@ import { loginRequest, tokenRequest } from "../../authConfig";
 import { getMsGraph } from "../../services/azure-services";
 import { checkEndpoint } from "../../services/api-services";
 import axios, { AxiosError } from "axios";
+import { BasicResponse } from "../../typescript/response-types";
 
 const Home = () => {
   const { instance, accounts } = useMsal();
@@ -47,12 +48,13 @@ const Home = () => {
 
     try {
       const checkResponse = await checkEndpoint(tokenResponse.accessToken);
-      setSpringMessage(checkResponse.data);
+      setSpringMessage(checkResponse.data.data);
       //@
     } catch (e) {
       const error = e as AxiosError;
       if (axios.isAxiosError(error)) {
-        setSpringMessage(error?.response?.data as string);
+        const errorResponse = error?.response?.data as BasicResponse<null>;
+        setSpringMessage(errorResponse.message);
       }
       console.log("error", error);
     }
